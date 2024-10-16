@@ -1,3 +1,7 @@
 package pkg
 
-type CmdInterface interface{}
+import "github.com/thanpawatpiti/exec-go-loan/pkg/handlers/usecase"
+
+type CmdInterface interface {
+	Login(body usecase.RequestLogin) (*usecase.ResponseLogin, error)
+}

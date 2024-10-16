@@ -1,3 +1,7 @@
 package pkg
 
-type ModelInterface interface{}
+import "github.com/thanpawatpiti/exec-go-loan/pkg/handlers/usecase"
+
+type ModelInterface interface {
+	Login(body usecase.RequestLogin) (*uint, error)
+}
