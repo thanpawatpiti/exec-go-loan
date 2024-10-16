@@ -1,7 +1,12 @@
 package routes
 
-func AuthRoutes(app *Route) {
-	auth := app.Route.Group("/auth")
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/thanpawatpiti/exec-go-loan/pkg/handlers"
+)
 
-	auth.Post("/login", app.Handler.Login)
+func AuthRoutes(api fiber.Router, handler handlers.InitHandler) {
+	auth := api.Group("/auth")
+
+	auth.Post("/login", handler.Login)
 }

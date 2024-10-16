@@ -26,8 +26,10 @@ func NewRoute(cmdInterface pkg.CmdInterface, handler handlers.InitHandler) *Rout
 }
 
 func (r *Route) Load() {
-	AuthRoutes(r)
-	HealthRoutes(r)
+	api := r.Route.Group("/api/v1")
+
+	AuthRoutes(api, r.Handler)
+	HealthRoutes(api, r.Handler)
 }
 
 func (r *Route) Start() {
