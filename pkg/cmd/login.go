@@ -37,7 +37,7 @@ func GenerateToken(userID uint) (string, string, error) {
 		"iss":     config.AppName,
 	}
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, accessTokenClaims)
-	signedAccessToken, err := accessToken.SignedString(config.JwtSecretKey)
+	signedAccessToken, err := accessToken.SignedString([]byte(config.JwtSecretKey))
 	if err != nil {
 		return "", "", err
 	}
@@ -48,7 +48,7 @@ func GenerateToken(userID uint) (string, string, error) {
 		"exp":     time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days expiration
 	}
 	refreshToken := jwt.NewWithClaims(jwt.SigningMethodHS256, refreshTokenClaims)
-	signedRefreshToken, err := refreshToken.SignedString(config.JwtSecretKey)
+	signedRefreshToken, err := refreshToken.SignedString([]byte(config.JwtSecretKey))
 	if err != nil {
 		return "", "", err
 	}
