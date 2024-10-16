@@ -2,21 +2,26 @@ package routes
 
 import (
 	"github.com/thanpawatpiti/exec-go-loan/pkg"
+	"github.com/thanpawatpiti/exec-go-loan/pkg/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type Route struct {
-	Route        *fiber.App
-	CmdInterface pkg.CmdInterface
-	Model        pkg.ModelInterface
+	Route   *fiber.App
+	Handler handlers.InitHandler
 }
 
-func NewRoute(cmdInterface pkg.CmdInterface, model pkg.ModelInterface) *Route {
+func NewRoute(cmdInterface pkg.CmdInterface, handler handlers.InitHandler) *Route {
+	r := fiber.New()
+	r.Use(func(c *fiber.Ctx) error {
+		c.Set("Content-Type", "application/json")
+		return c.Next()
+	})
+
 	return &Route{
-		Route:        fiber.New(),
-		CmdInterface: cmdInterface,
-		Model:        model,
+		Route:   r,
+		Handler: handler,
 	}
 }
 

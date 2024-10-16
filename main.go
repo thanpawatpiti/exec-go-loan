@@ -6,6 +6,7 @@ import (
 	"github.com/thanpawatpiti/exec-go-loan/config"
 	"github.com/thanpawatpiti/exec-go-loan/config/database"
 	"github.com/thanpawatpiti/exec-go-loan/pkg/cmd"
+	"github.com/thanpawatpiti/exec-go-loan/pkg/handlers"
 	"github.com/thanpawatpiti/exec-go-loan/pkg/models"
 	"github.com/thanpawatpiti/exec-go-loan/routes"
 	"gorm.io/gorm"
@@ -35,8 +36,11 @@ func main() {
 	// Init Command
 	cmd := cmd.NewInitCmd(model)
 
+	// Init Handler
+	handler := handlers.NewInitHandler(cmd)
+
 	// Load routes
-	r := routes.NewRoute(cmd, model)
+	r := routes.NewRoute(cmd, *handler)
 	r.Load()
 
 	// Start the server
