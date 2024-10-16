@@ -41,6 +41,4 @@ func main() {
 
 	// Start the server
 	r.Start()
-
-	fmt.Println("Server started")
 }
