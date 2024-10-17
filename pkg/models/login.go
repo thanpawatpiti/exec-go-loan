@@ -1,9 +1,31 @@
 package models
 
-import "github.com/thanpawatpiti/exec-go-loan/pkg/handlers/usecase"
+import (
+	"errors"
+
+	"github.com/thanpawatpiti/exec-go-loan/pkg/handlers/usecase"
+	orm "github.com/thanpawatpiti/exec-go-loan/pkg/models/orm"
+	"golang.org/x/crypto/bcrypt"
+)
 
 func (m *Init) Login(body usecase.RequestLogin) (*uint, error) {
-	userId := uint(1)
+	var accountUser orm.AccountUser
 
-	return &userId, nil
+	// ค้นหา user จาก username (account_value)
+	err := m.DB.Where("account_value = ?", body.Username).First(&accountUser).Error
+	if err != nil {
+		return nil, errors.New("invalid username or password")
+	}
+
+	if accountUser.AccountType == "line_id" {
+		return &accountUser.UserID, nil
+	}
+
+	// ตรวจสอบรหัสผ่าน
+	err = bcrypt.CompareHashAndPassword([]byte(accountUser.EncryptedPassword), []byte(body.Password))
+	if err != nil {
+		return nil, errors.New("invalid username or password")
+	}
+
+	return &accountUser.UserID, nil
 }
