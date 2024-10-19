@@ -18,6 +18,16 @@ func Protected() fiber.Handler {
 			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
 		}
 
+		// Check if token is expired
+		if claims["exp"] == nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token is expired"})
+		}
+
+		// Check if user is not found
+		if claims["user_id"] == nil {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "User not found"})
+		}
+
 		// Set user information to context for future use
 		c.Locals("user_id", claims["user_id"])
 		return c.Next()
