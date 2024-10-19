@@ -9,4 +9,5 @@ func AuthRoutes(api fiber.Router, handler handlers.InitHandler) {
 	auth := api.Group("/auth")
 
 	auth.Post("/login", handler.Login)
+	auth.Post("/refresh", handler.Refresh)
 }

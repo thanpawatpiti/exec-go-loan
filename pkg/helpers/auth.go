@@ -1,32 +1,12 @@
-package cmd
+package helpers
 
 import (
+	"fmt"
 	"time"
 
-	"github.com/thanpawatpiti/exec-go-loan/config"
-	"github.com/thanpawatpiti/exec-go-loan/pkg/handlers/usecase"
-
 	"github.com/golang-jwt/jwt/v4"
+	"github.com/thanpawatpiti/exec-go-loan/config"
 )
-
-func (c *InitCmd) Login(body usecase.RequestLogin) (*usecase.ResponseLogin, error) {
-	// Call the repository
-	userId, err := c.Model.Login(body)
-	if err != nil {
-		return nil, err
-	}
-
-	// Generate tokens
-	accessToken, refreshToken, err := GenerateToken(*userId)
-	if err != nil {
-		return nil, err
-	}
-
-	return &usecase.ResponseLogin{
-		AccessToken:  accessToken,
-		RefreshToken: refreshToken,
-	}, nil
-}
 
 // GenerateToken creates an access token and a refresh token
 func GenerateToken(userID uint) (string, string, error) {
@@ -54,4 +34,20 @@ func GenerateToken(userID uint) (string, string, error) {
 	}
 
 	return signedAccessToken, signedRefreshToken, nil
+}
+
+// ValidateToken validates the token string and returns the claims if valid
+func ValidateToken(tokenStr string) (jwt.MapClaims, error) {
+	token, err := jwt.Parse(tokenStr, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(config.JwtSecretKey), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		return claims, nil
+	} else {
+		return nil, err
+	}
 }

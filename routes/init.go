@@ -30,6 +30,7 @@ func (r *Route) Load() {
 
 	AuthRoutes(api, r.Handler)
 	HealthRoutes(api, r.Handler)
+	ProfileRoute(api, r.Handler)
 }
 
 func (r *Route) Start() {
