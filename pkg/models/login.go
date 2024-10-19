@@ -17,7 +17,7 @@ func (m *Init) Login(body usecase.RequestLogin) (*uint, error) {
 		return nil, errors.New("invalid username or password")
 	}
 
-	if accountUser.AccountType == "line_id" {
+	if accountUser.AccountType != "username" {
 		return &accountUser.UserID, nil
 	}
 
